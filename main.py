@@ -154,6 +154,10 @@ def main(argv: list) -> None:
     elif argv[1] == 'documentation':
         documentation()
 
+    elif argv[1] == 'extract':
+        location = input('Backup location: ')
+        backup.extractBackup(enviroment.GD_RESOURCES_PATH, location)
+
 
 if __name__ == '__main__':
     main(sys.argv)
