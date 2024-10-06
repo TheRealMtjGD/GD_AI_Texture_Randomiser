@@ -11,6 +11,7 @@ try:
     import shutil
     import errors
     import docs
+    import json5
     
 except ModuleNotFoundError:
     os.system('pip install -r requirements.txt')
@@ -27,7 +28,15 @@ else:
     raise errors.InvalidQualityError(f'Quality variable can only be set to "reg", "hd" or "uhd" not "{enviroment.QUALITY}"')
 
 RESOURCES_DICTIONARY = {
+    f"GJ_GameSheet{UQUALITY}.plist": f"GJ_GameSheet{UQUALITY}.png",
+    f"GJ_GameSheet01{UQUALITY}.plist": f"GJ_GameSheet01{UQUALITY}.png",
+    f"GJ_GameSheet02{UQUALITY}.plist": f"GJ_GameSheet01{UQUALITY}.png",
+    f"GJ_GameSheet03{UQUALITY}.plist": f"GJ_GameSheet01{UQUALITY}.png",
+    f"GJ_GameSheet04{UQUALITY}.plist": f"GJ_GameSheet01{UQUALITY}.png",
     
+    f"GJ_GameSheetEditor{UQUALITY}.plist": f"GJ_GameSheetEditor{UQUALITY}.png",
+    f"GJ_GameSheetGlow{UQUALITY}.plist": f"GJ_GameSheetGlow{UQUALITY}.png",
+    f"GJ_GameSheetIcons{UQUALITY}.plist": f"GJ_GameSheetIcons{UQUALITY}.png"
 }
 
 def randomiseTextures() -> None:
@@ -141,6 +150,12 @@ def documentation() -> None:
         case 4:
             docs.codeowners()
 
+def load_extension(file: str) -> None:
+    with open(file) as rstream:
+        extension = json5.load(rstream)
+    
+    RESOURCES_DICTIONARY.update(extension)
+
 def main(argv: list) -> None:
     if argv[1] == 'randomise':
         match input('Are you shure (Y or n): ').lower():
@@ -157,7 +172,9 @@ def main(argv: list) -> None:
     elif argv[1] == 'extract':
         location = input('Backup location: ')
         backup.extractBackup(enviroment.GD_RESOURCES_PATH, location)
-
+    
+    elif argv[1] == 'load_extension':
+        load_extension(argv[2])
 
 if __name__ == '__main__':
     main(sys.argv)
