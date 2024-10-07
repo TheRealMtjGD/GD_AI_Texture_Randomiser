@@ -39,9 +39,15 @@ RESOURCES_DICTIONARY = {
     f"GJ_GameSheetIcons{UQUALITY}.plist": f"GJ_GameSheetIcons{UQUALITY}.png"
 }
 
-def randomiseTextures() -> None:
+def randomiseTextures(extensions: list[str]|None=None) -> None:
     print('Creating backups')
     backup.backupResourcesFolder(enviroment.GD_RESOURCES_PATH, 'backup/backup.zip')
+
+    if not extensions == None:
+        for ext in extensions:
+            with open(ext) as file:
+                print(f'  loading extension: {ext}')
+                RESOURCES_DICTIONARY.update(json5.load(file)['files'])
     
     print('Generating AI Textures ( 1. SpriteSheet )')
     for resource_plist in RESOURCES_DICTIONARY:
@@ -158,9 +164,18 @@ def load_extension(file: str) -> None:
 
 def main(argv: list) -> None:
     if argv[1] == 'randomise':
+        try:
+            argv[2]
+            argv[3]
+
+            if argv[2] == '--use-extensions':
+                extensions = argv[3].split(';')
+        except IndexError:
+            extensions = None
+
         match input('Are you shure (Y or n): ').lower():
             case 'y':
-                randomiseTextures()
+                randomiseTextures(extensions)
             case 'n':
                 exit(0)
             case _:
